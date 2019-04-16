@@ -66,14 +66,14 @@ plot(zn.vgm, model=fitted_variogram, pch=19, col="black", main="Fitted Model",
 
 #--------------------------------KRIGING--------------------------------------
 
-lzn.krigedauto <- autoKrige((X0) ~ 1, data, croppred_grid.sp) #perform auto kriging
-summary(lzn.krigedauto)
-plot(lzn.krigedauto)
+data.auto_krige <- autoKrige((X0) ~ 1, data, croppred_grid.sp) #perform auto kriging
+summary(data.auto_krige)
+plot(data.auto_krige)
 
 
 
-kr = krige((X0) ~ 1, data,  croppred_grid.sp, fitted_variogram) #perform manual kriging
-summary(kr)
-plot(kr, main="Ozone Kriging Prediction")
-
+data.krige = krige((X0) ~ 1, data,  croppred_grid.sp, fitted_variogram) #perform manual kriging
+summary(data.krige)
+plot(data.krige, main="Ozone Kriging Prediction")
+points(data, pch=4, cex=1)
 
