@@ -3,10 +3,20 @@ kriging = function(data)
 {
   #-------------------------------SETTING GRID FOR KRIGING-----------------------------
   
+  # Set the origin
+  ori <- SpatialPoints(cbind(-86.25298, 31.2855), proj4string =  CRS("+init=epsg:4326")) 
+  # Convert the projection of ori
+  # Use EPSG: 3857 (Spherical Mercator)
+  ori_t <- spTransform(ori, CRSobj = CRS("+init=epsg:3857"))
+
+  # The origin has been rounded to the nearest 100
+  x_ori <- round(coordinates(ori_t)[1, 1]/100) * 100
+  y_ori <- round(coordinates(ori_t)[1, 2]/100) * 100
+  
   #transforming data into Mector Projection
   data = spTransform(data, CRSobj = CRS("+init=epsg:3857"))
   
-  data.grid = GridTopology(c(-9541787 ,3616144), c(8000,10000), c(70,56)) #making grid
+  data.grid = GridTopology(cellcentre.offset = c(x_ori ,y_ori), cellsize = c(10000,10000), cells.dim = c(57,57)) #making grid
   grid.sp = SpatialPoints(data.grid, proj4string = CRS("+init=epsg:3857")) #convrting to spatial point
   mapview(data, zcol = "X0") + mapview(grid.sp, cex = 1) #overlay of grid over the stations
   bound = bbox(grid.sp) #boundig box of grid spatial object
@@ -50,7 +60,7 @@ kriging = function(data)
   # plot(data.krige["var1.var"], main="Kriging Variance", col = rev(heat.colors(50)))
   # points(data, pch=4, cex=0.5)
   
-  return_list = list(Data = data, Data.Krige = data.krige, Data.Variogram = data.variogram, Fitted_Variogram = fitted_variogram)
+  return_list = list(Data = data, Data.Krige = data.krige, Data.Variogram = data.variogram, Fitted_Variogram = fitted_variogram, Grid_SP = grid.sp)
   return(return_list)
   
   
