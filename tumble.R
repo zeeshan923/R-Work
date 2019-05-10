@@ -18,8 +18,8 @@ tumble = function(H)
                   byrow = TRUE)
   H_temp = round(H_temp)
   A = H%*%H_temp
-  
-  if(A[2,1] == 0.7071068 || A[2,1] == -0.7071068)
+  A21 = round(A[2,1], digits=3)
+  if(A21 == 0.707 || A21 == -0.707)
   {
     H1 = matrix(c(1, 0, 0, 14142.13562,
                   0, 1, 0, 0,
