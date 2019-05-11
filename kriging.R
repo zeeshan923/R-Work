@@ -4,7 +4,7 @@ kriging = function(data)
   #-------------------------------SETTING GRID FOR KRIGING-----------------------------
   
   # Set the origin
-  ori <- SpatialPoints(cbind(-86.25298, 31.2855), proj4string =  CRS("+init=epsg:4326")) 
+  ori <- SpatialPoints(cbind(-85.35004, 33.00564), proj4string =  CRS("+init=epsg:4326")) 
   # Convert the projection of ori
   # Use EPSG: 3857 (Spherical Mercator)
   ori_t <- spTransform(ori, CRSobj = CRS("+init=epsg:3857"))
@@ -16,7 +16,7 @@ kriging = function(data)
   #transforming data into Mector Projection
   data = spTransform(data, CRSobj = CRS("+init=epsg:3857"))
   
-  data.grid = GridTopology(cellcentre.offset = c(x_ori ,y_ori), cellsize = c(10000,10000), cells.dim = c(57,57)) #making grid
+  data.grid = GridTopology(cellcentre.offset = c(x_ori ,y_ori), cellsize = c(10000,10000), cells.dim = c(25,20)) #making grid
   grid.sp = SpatialPoints(data.grid, proj4string = CRS("+init=epsg:3857")) #convrting to spatial point
   mapview(data, zcol = "X0") + mapview(grid.sp, cex = 1) #overlay of grid over the stations
   bound = bbox(grid.sp) #boundig box of grid spatial object

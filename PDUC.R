@@ -16,11 +16,12 @@ library(gridExtra)
 library(RColorBrewer)
 library(useful)
 library(shape)
+library(oce)
 setwd("C:/Users/Zeeshan/Desktop/Kriging/version control") 
 source("kriging.R")
 source("data_read.R")
 #-------------------------------Data Reading and CRS Setting-------------------------
-data = data.read("avg.txt")
+data = data.read("avg1.txt")
 
 #-------------------------------Data Visualization-----------------------------------
 # bubble(data, "X0", col="#00ff0088", maxsize = 3.5 ,main="Ozone concentrations (ppb)", xlab="Longitude", ylab="Latitude")
@@ -39,8 +40,9 @@ data = data.read("avg.txt")
 # -------------------------------Performing Kriging-----------------------------------
 data_krige = kriging(data)
 
-# mapview(data, zcol = "X0", cex = 6)
-# mapview(data, zcol = "X0", cex = 6) + mapview(data_krige$Grid_SP, cex = 1)
+mapview(data, zcol = "X0", cex = 6)
+mapview(data, zcol = "X0", cex = 6) + mapview(data_krige$Grid_SP, cex = 1)
+grid_bound = bbox(data_krige$Grid_SP)
 # 
 # #-------------------------------Variogram Visualization------------------------------
 # plot(data_krige$Data.Variogram, pch=19, col="black", ylab=expression("Semivariance("*gamma*")"),
@@ -51,9 +53,9 @@ data_krige = kriging(data)
 # 
 # #
 # #-------------------------------Kriging Visualization------------------------------
-# plot(data_krige$Data.Krige["var1.pred"], main="Ozone Kriging Prediction", col = rev(heat.colors(60)))
-# points(data_krige$Data, pch=4, cex=0.5)
-# 
+plot(data_krige$Data.Krige["var1.pred"], main="Ozone Kriging Prediction", col = rev(heat.colors(60)))
+points(data_krige$Data, pch=4, cex=1)
+
 # plot(data_krige$Data.Krige["var1.var"], main="Kriging Variance", col = rev(heat.colors(50)))
 # points(data_krige$Data, pch=4, cex=0.5)
 # mapview(data_krige$Data.Krige["var1.pred"], alpha.regions = 0.7, col.regions = rev(heat.colors(250))) + mapview(data, zcol = "X0", cex = 1, alpha.regions = 1/4)
@@ -69,15 +71,7 @@ source("getPollution.R")
 source("Grid_Index.R")
 source("rotate.R")
 
-# Initial Homogenous Transformation
-H_initial = matrix(
-  c(0.7071068, -0.7071068, 0, -9601600,
-    0.7071068, 0.7071068, 0, 3669900,
-    0, 0, 1, 5,
-    0, 0, 0, 1),
-  nrow=4, 
-  ncol=4,
-  byrow = TRUE)
+
 
 #%% Initialization of points and variables----------------------------------------
 
@@ -90,6 +84,15 @@ i = 1
 ttl_max = 2
 Y = data_krige$Data.Krige@data$var1.pred
 dat = data_krige$Data.Krige@coords
+# Initial Homogenous Transformation
+H_initial = matrix(
+  c(0.7071068, -0.7071068, 0, grid_bound[1,1],
+    0.7071068, 0.7071068, 0, grid_bound[2,1],
+    0, 0, 1, 5,
+    0, 0, 0, 1),
+  nrow=4, 
+  ncol=4,
+  byrow = TRUE)
 plot(data_krige$Data.Krige["var1.pred"], main="Ozone Kriging Prediction", col = rev(heat.colors(60)))
 
 
